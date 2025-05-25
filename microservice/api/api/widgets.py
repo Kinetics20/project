@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.post(
     "/",
-    response_model=Widget
+    response_model=list[Widget]
 )
 async def create_new_widget(widget: WidgetCreate) -> Widget:
     """Create a new widget."""
