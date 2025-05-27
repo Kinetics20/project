@@ -1,8 +1,12 @@
+import os
+
 from datetime import datetime, timezone, timedelta
+
 from typing import Any, Callable
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Response
+from pydantic_settings.sources.providers import env
 from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -117,10 +121,33 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 
 
+class EnvMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: Callable):
+        host = request.headers.get('host', '')
+
+        if "dev" in host:
+            env = "dev"
+            debug = True
+        elif "uat" in host:
+            env = "uat"
+            debug = True
+        elif "cert" in host:
+            env = "cert"
+            debug = False
+        else:
+            env = "prod"
+            debug = False
+
+        os.environ["ENV"] = env
+        os.environ["DEBUG"] = str(debug)
+
+        return await call_next(request)
 
 
 
 def add_middleware(app: FastAPI) -> None:
+    app.add_middleware(EnvMiddleware)
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.CORS_ALLOW_ORIGINS,
