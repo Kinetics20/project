@@ -11,11 +11,13 @@ from utils.sanitizer import sanitize_string
 class WidgetBase(BaseModel):
     """Base widget schema"""
 
-    name: str
+    name: str = Field(..., description="Name of the widget")
     description: str | None = None
     price: float
     quantity: PositiveInt
     category: str
+
+
 
     @model_validator(mode='before')
     @classmethod
@@ -33,7 +35,7 @@ class WidgetCreate(WidgetBase):
 
 class WidgetUpdate(WidgetBase):
     """Schema for updating a widget"""
-    name: str | None = None
+    name: str | None = Field(default=None, description="Name of the widget")
     description: str | None = None
     price: float | None = None
     quantity: PositiveInt | None = None
@@ -46,6 +48,19 @@ class Widget(WidgetBase):
         from_attributes=True,
         populate_by_name=True,
         arbitrary_types_allowed=True,
+        json_schema_extra={
+            "example": {
+                "id": "683465227af958d7c44cb8ee",
+                "name": "Widget 1",
+                "description": "Widget description",
+                "price": 10.0,
+                "quantity": 1,
+                "category": "category 1",
+                "owner": "abc",
+                "created_at": "2025-05-28T13:52:14.603Z",
+                "updated_at": "2025-05-28T13:52:14.603Z"
+            }
+        }
     )
 
     id: ObjectId = Field(alias="_id")

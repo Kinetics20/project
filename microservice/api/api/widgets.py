@@ -16,12 +16,14 @@ router = APIRouter(
 @router.post(
     "/",
     response_model=list[Widget],
+    dependencies=[Depends(require_permission(Permission.CREATE_WIDGET))],
 
 )
 async def create_new_widget(widget: WidgetCreate,
-                            current_user: User) -> Widget:
+                            current_user: User = Depends(get_current_active_user),
+                            ) -> Widget:
     """Create a new widget."""
-    return await create_widget(widget)
+    return await create_widget(widget, str(current_user.id))
 
 
 @router.get(
@@ -49,7 +51,7 @@ async def create_new_widget(widget: WidgetCreate,
 
 )
 async def read_widgets(
-        skip: Annotated[int, Query(ge=0, description='Number of rows to skip')] =0,
+        skip: Annotated[int, Query(ge=0, description='Number of rows to skip')] = 0,
         limit: Annotated[int, Query(ge=1, le=100, description='Numbers of records to retrieve')] = 10,
         category: Annotated[str | None, Query(description='Category name')] = None,
         current_user: User = Depends(get_current_active_user)
