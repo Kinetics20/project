@@ -3,4 +3,3 @@
 
 *.pyc
 __pycache__
-microservice/.k8s/mongodb.yml
