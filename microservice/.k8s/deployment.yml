@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: widget-api
+  labels:
+    app: widget-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: widget-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: widget-api
+    spec:
+      containers:
+        - name: widget-api
+          image: marcin888/fastapi:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: MONGO_URI
+              value: mongodb://mongodb:27017
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
