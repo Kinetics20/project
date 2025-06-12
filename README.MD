@@ -57,6 +57,13 @@ docker buildx build -t fastapi:latest .
 docker run -d -p 8001:80 --env-file .env fastapi:latest
 ```
 
+To deploy the MongoDB pod using Kubernetes, switch to the `.k8s` directory and apply the manifest:
+
+```bash
+cd .k8s
+kubectl apply -f mongodb.yml
+```
+
 ---
 
 ### 🔜 Planned Features
