@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: widget-api
-          image: marcin888/fastapi:v2
+          image: piotrlipinski/fastapi:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 80
