@@ -1,11 +1,12 @@
 from datetime import datetime
-from decimal import Decimal
-from typing import Any
+from typing import Any, Annotated
 
 from bson import ObjectId
-from pydantic import BaseModel, PositiveInt, model_validator, Field, ConfigDict, field_serializer
+from pydantic import BaseModel, PositiveInt, model_validator, Field, ConfigDict, field_serializer, BeforeValidator
 
 from utils.sanitizer import sanitize_string
+
+StrObjectId = Annotated[str, BeforeValidator(str)]
 
 
 class WidgetBase(BaseModel):
@@ -16,8 +17,6 @@ class WidgetBase(BaseModel):
     price: float
     quantity: PositiveInt
     category: str
-
-
 
     @model_validator(mode='before')
     @classmethod
@@ -50,24 +49,24 @@ class Widget(WidgetBase):
         arbitrary_types_allowed=True,
         json_schema_extra={
             "example": {
-                "id": "683465227af958d7c44cb8ee",
+                "id": "6832e75bb5d4c82478dc0f90",
                 "name": "Widget 1",
                 "description": "Widget description",
                 "price": 10.0,
                 "quantity": 1,
                 "category": "category 1",
                 "owner": "abc",
-                "created_at": "2025-05-28T13:52:14.603Z",
-                "updated_at": "2025-05-28T13:52:14.603Z"
+                "created_at": "2025-05-27T19:16:42.336Z",
+                "updated_at": "2025-05-27T19:16:42.336Z"
             }
         }
     )
 
-    id: ObjectId = Field(alias="_id")
+    id: StrObjectId = Field(alias="_id")
     owner: str
     created_at: datetime
     updated_at: datetime | None = None
 
-    @field_serializer("id")
-    def serialize_id(self, value: ObjectId) -> str:
-        return str(value)
+    # @field_serializer("id")
+    # def serialize_id(self, value: ObjectId) -> str:
+    #     return str(value)

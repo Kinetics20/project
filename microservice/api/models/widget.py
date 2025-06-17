@@ -6,9 +6,9 @@ from core.config import settings
 from core.database import widgets_collection
 from schemas.widget import WidgetCreate, Widget, WidgetUpdate
 
-WIDGET_KEY = 'widget:{}'
-WIDGETS_BY_OWNER_KEY = 'widgets:owner:{}'
-WIDGETS_BY_CATEGORY_KEY = 'widgets:owner:{}:category:{}'
+WIDGET_KEY = "widget:{}"
+WIDGETS_BY_OWNER_KEY = "widgets:owner:{}"
+WIDGETS_BY_CATEGORY_KEY = "widgets:owner:{}:category:{}"
 
 
 async def create_widget(widget: WidgetCreate, owner_id: str) -> Widget:
@@ -24,8 +24,8 @@ async def create_widget(widget: WidgetCreate, owner_id: str) -> Widget:
     await delete_cache(owner_cache_key)
 
     widget_object = Widget.model_validate(widget_dict)
-    widget_cache_key = WIDGET_KEY.format(widget_object['_id'])
-    await set_cache(widget_cache_key, widget_object, settings.REDIS_TTL)
+    widget_cache_key = WIDGET_KEY.format(widget_dict["_id"])
+    await set_cache(widget_cache_key, widget_dict, settings.REDIS_TTL)
 
     return widget_object
 
@@ -42,11 +42,12 @@ async def get_widgets(
     if category:
         cache_key = WIDGETS_BY_CATEGORY_KEY.format(owner_id, category)
 
-    cache_key = f'{cache_key}:{skip}:{limit}:limit:{limit}'
+    cache_key = f"{cache_key}:skip:{skip}:limit:{limit}"
 
     cached_widgets = await get_cache(cache_key)
     if cached_widgets:
         return [Widget.model_validate(widget) for widget in cached_widgets]
+
 
     query = {"owner": owner_id}
     if category:
