@@ -12,6 +12,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
 from core.config import settings
+from core.prometheus_middleware import PrometheusMiddleware
+
 
 class RateLimiter:
     def __init__(self):
@@ -158,3 +160,4 @@ def add_middleware(app: FastAPI) -> None:
     )
 
     app.add_middleware(RateLimitMiddleware)
+    app.add_middleware(PrometheusMiddleware)
