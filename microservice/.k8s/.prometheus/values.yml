@@ -37,7 +37,7 @@ alertmanager:
       receivers:
         - name: 'team-email'
           email_configs:
-            - to: 'team@example.com'
+            - to: 'koltan.pl+team@gmail.com'
               send_resolved: true
 
         - name: 'team-critical'
@@ -49,7 +49,7 @@ alertmanager:
               text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
               color: 'danger'
           email_configs:
-            - to: 'oncall@example.com'
+            - to: 'koltan.pl+oncall@gmail.com'
               send_resolved: true
 
         - name: 'security-team'
@@ -60,7 +60,7 @@ alertmanager:
               text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
               color: 'danger'
           email_configs:
-            - to: 'security@example.com'
+            - to: 'koltan.pl+security@gmail.com'
               send_resolved: true
 
         - name: 'ops-team'
@@ -71,7 +71,7 @@ alertmanager:
               text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
               color: 'warning'
           email_configs:
-            - to: 'ops@example.com'
+            - to: 'koltan.pl+@gmail.com'
               send_resolved: true
       enabled: true
       persistentVolume:
