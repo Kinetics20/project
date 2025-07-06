@@ -15,13 +15,14 @@ router = APIRouter(
 
 @router.post(
     "/",
-    response_model=list[Widget],
+    response_model=Widget,
     dependencies=[Depends(require_permission(Permission.CREATE_WIDGET))],
 
 )
-async def create_new_widget(widget: WidgetCreate,
-                            current_user: User = Depends(get_current_active_user),
-                            ) -> Widget:
+async def create_new_widget(
+        widget: WidgetCreate,
+        current_user: User = Depends(get_current_active_user)
+) -> Widget:
     """Create a new widget."""
     return await create_widget(widget, str(current_user.id))
 
@@ -29,8 +30,8 @@ async def create_new_widget(widget: WidgetCreate,
 @router.get(
     "/",
     response_model=list[Widget],
-    summary='List all widgets for a given user.',
-    description='Retrieve paginated list of widgets for a given user. Optional filtering by category.',
+    summary="List all widgets for a given user.",
+    description="Retrieve paginated list of widgets for a given user. Optional filtering by category.",
     dependencies=[Depends(require_permission(Permission.READ_WIDGET))],
     responses={
         status.HTTP_200_OK: {
