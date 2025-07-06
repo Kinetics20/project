@@ -5,6 +5,10 @@
 
 A **complete microservice API** built with **FastAPI**, providing full REST support for **user** and **widget** resources. It features **JWT authentication**, **role-based access control**, **Redis caching**, and **MongoDB** as the data store. Monitoring is handled via **Prometheus** and **Grafana**. The system is containerized with **Docker** and deployed using **Kubernetes**.
 
+![Grafana_dashboard](https://github.com/Kinetics20/project/blob/main/microservice/docs/grafana_dashboard.jpg)
+
+![Prometheus_target_health](https://github.com/Kinetics20/project/blob/main/microservice/docs/prometheus.jpg)
+
 ---
 
 ### 🧱 Tech Stack
