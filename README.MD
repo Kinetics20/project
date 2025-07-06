@@ -1,85 +1,161 @@
 
 # 🧩 FastAPI Microservice – User & Widget API ![Python](https://img.shields.io/badge/Python-3.13-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-0.115.12-green) ![MongoDB](https://img.shields.io/badge/MongoDB-8.0.9-success) ![Docker](https://img.shields.io/badge/Docker-4.41-blue)
 
-### 🔧 Project Description
+### 🔧 Project Overview
 
-A **modular microservice backend** built with **FastAPI**, providing full REST API support for user and `widget` resources. The system is designed with a strong focus on **security**, **scalability**, and **extensibility**, allowing easy integration of future services and features.
+A **complete microservice API** built with **FastAPI**, providing full REST support for **user** and **widget** resources. It features **JWT authentication**, **role-based access control**, **Redis caching**, and **MongoDB** as the data store. Monitoring is handled via **Prometheus** and **Grafana**. The system is containerized with **Docker** and deployed using **Kubernetes**.
 
 ---
 
 ### 🧱 Tech Stack
 
 - **Python 3.13+**
-- **FastAPI 0.115.12** – modern, high-performance web framework
-- **MongoDB 8.0.9** – used via `pymongo` (async logic handled manually)
-- **Pydantic Settings 2.9.1** – typed and environment-based config
-- **Passlib 1.7.4 [bcrypt]** – secure password hashing
-- **python-jose 3.4.0** – JWT-based authentication
-- **python-dotenv 1.1.0** – .env configuration loader
-- **nh3 0.2.21** – HTML sanitizer for content if needed
-- **Docker Desktop 4.41** – image-based containerization
-- **Kubernetes** – database pod deployment via `mongodb.yml` manifest
+- **FastAPI** – high-performance async web framework
+- **MongoDB** – data persistence
+- **Redis** – in-memory cache store
+- **Prometheus + Grafana** – monitoring and visualization
+- **Docker Desktop** – image containerization
+- **Kubernetes** – container orchestration
+- **uv** – Python dependency manager
 
 ---
 
-### 📁 Project Structure
+### 🗂 Project Structure
 
 ```bash
-.
-├── .k8s/
-│   └── mongodb.yml         # K8s manifest to deploy MongoDB as a pod
-├── api/
-│   ├── Dockerfile          # Dockerfile for building the API image
-│   └── ...                 # FastAPI routers and logic
-├── core/                   # Configuration, DB, RBAC, middleware
-├── models/                 # Async MongoDB models (ORM logic)
-├── schemas/                # Pydantic data schemas
-├── main.py                 # FastAPI application entry point
-├── config.py               # Environment-based config
-└── .env                    # Environment variables
+project/
+├── microservice/
+│   ├── api/                    # FastAPI logic
+│   │   ├── .cert/              # Certificate files (SSL)
+│   │   ├── core/               # Configuration, DB, RBAC
+│   │   ├── models/             # MongoDB models
+│   │   ├── schemas/            # Pydantic schemas
+│   │   ├── scripts/            # Grafana dashboard
+│   │   ├── utils/              # Utilities (e.g., sanitizer)
+│   │   ├── Dockerfile          # API image definition
+│   │   └── main.py             # App entry point
+│   ├── .k8s/                   # Kubernetes manifests
+│   │   ├── mongodb.yml
+│   │   ├── redis.yml
+│   │   ├── secret.yml
+│   │   ├── service.yml
+│   │   ├── deployment.yml
+│   │   └── prometheus/
+└── README.md
 ````
 
 ---
 
-### 🔐 Key Features
+### ✅ Features
 
-* ✅ User registration and login with hashed passwords
-* ✅ JWT-based authentication and role/permission system (RBAC)
-* ✅ RESTful endpoints for user and widget resources
-* ✅ Role and permission assignment logic
-* ✅ `.env`-driven config (MongoDB, JWT, CORS)
-* ✅ CORS and rate limiting for secure API access
-* ✅ MongoDB deployment via Kubernetes manifest (`.k8s/mongodb.yml`)
-* ✅ Docker image creation and deployment using:
+* User registration and login (with password hashing)
+* JWT-based authentication
+* Role-Based Access Control (RBAC)
+* Widget CRUD functionality
+* Redis-based caching
+* MongoDB database backend
+* Prometheus + Grafana monitoring
+* Kubernetes-based deployment
+
+---
+
+### 🚀 Getting Started
+
+#### 1. Clone the repository
 
 ```bash
-docker buildx build -t fastapi:latest .
-docker run -d -p 8001:80 --env-file .env fastapi:latest
+git clone git@github.com:Kinetics20/project.git
+cd project/microservice/api
 ```
 
-To deploy the MongoDB pod using Kubernetes, switch to the `.k8s` directory and apply the manifest:
+#### 2. Install dependencies with `uv`
 
 ```bash
-cd .k8s
+uv sync
+```
+
+#### 3. Generate SSL certificates
+
+Navigate to the `.cert` directory and run:
+
+```bash
+cd microservice/api/.cert
+openssl req -x509 --nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem
+```
+
+These are used for secure authorization.
+
+#### 4. Build Docker image
+
+Go back to the `api` directory and build the Docker image:
+
+```bash
+cd ..
+docker build -t fast:9 .
+```
+
+> If you change the image name (`fast:9`), update it in `.k8s/deployment.yml` under `containers.image`.
+
+---
+
+### ☸️ Kubernetes Deployment
+
+Ensure you have `kubectl` installed:
+
+```bash
+sudo snap install kubectl --classic
+```
+
+Apply manifests in the `.k8s` directory:
+
+```bash
+cd ../.k8s
 kubectl apply -f mongodb.yml
+kubectl apply -f redis.yml
+kubectl apply -f secret.yml
+kubectl apply -f service.yml
+kubectl apply -f deployment.yml
 ```
 
 ---
 
-### 🔜 Planned Features
+### 🔍 Check Deployment Status
 
-* [ ] Middleware for request logging and traffic analysis
-* [ ] Widget system with dedicated permission model
-* [ ] File uploads (e.g., user avatars)
-* [ ] Unit tests with `pytest` and coverage
-* [ ] Full containerization with Docker + Nginx reverse proxy
-* [ ] CI/CD pipeline integration (e.g., GitHub Actions)
+```bash
+kubectl get pods
+```
+
+Example output:
+
+```
+NAME                          READY   STATUS    RESTARTS   AGE
+mongodb-0                     1/1     Running   ...         ...
+redis-xxxxxxx                 1/1     Running   ...         ...
+widget-api-xxxxxxx            1/1     Running   ...         ...
+```
+
+For monitoring (namespace `monitoring`):
+
+```bash
+kubectl get pods -n monitoring
+```
 
 ---
 
-## 💬 Feedback
+### 📑 API Documentation
 
-Contributions and suggestions are welcome!
+Once running locally, open:
 
-👤 **Author**: Piotr Lipiński
-🗓 **Date**: June 2025
+```
+http://localhost/docs
+```
+
+![Swagger UI](https://github.com/Kinetics20/project/blob/main/microservice/docs/widget_Api.jpg)
+
+---
+
+### 📦 Author
+
+👤 **Piotr Lipiński**
+🗓 **Finished**: July 2025
+📫 Contributions welcome!
