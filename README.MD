@@ -157,7 +157,7 @@ http://localhost/docs
 
 ![Swagger UI](https://github.com/Kinetics20/project/blob/main/microservice/docs/widget_Api.jpg)
 
----
+
 
 ### 🔐 Authentication Workflow (Required to Use the API)
 
@@ -193,7 +193,7 @@ To successfully use all CRUD operations on users and widgets, follow these steps
 
 This project includes a full monitoring setup using **Prometheus** and **Grafana**, deployed via **Helm**.
 
----
+
 
 ### 🔧 1. Install Helm
 
@@ -207,7 +207,7 @@ sudo apt-get update
 sudo apt-get install helm
 ````
 
----
+
 
 ### 📦 2. Add Helm Repositories
 
@@ -217,7 +217,7 @@ helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 ```
 
----
+
 
 ### 🧠 3. Create Monitoring Namespace
 
@@ -225,7 +225,7 @@ helm repo update
 kubectl create namespace monitoring
 ```
 
----
+
 
 ### 📈 4. Install Prometheus
 
@@ -245,7 +245,7 @@ EOF
 
 This configures Prometheus to scrape metrics from the `widget-api` container.
 
----
+
 
 ### 📉 5. Install Grafana
 
@@ -273,7 +273,7 @@ Login credentials:
 * **Username**: `admin`
 * **Password**: `admin`
 
----
+
 
 ### 🔌 6. Port Forwarding
 
@@ -299,7 +299,7 @@ Prometheus will be available at:
 http://localhost:3001
 ```
 
----
+
 
 ### 🧾 7. Import Dashboard in Grafana
 
