@@ -4,8 +4,8 @@ alertmanager:
       resolve_timeout: 5m
       smtp_smarthost: 'smtp.gmail.com:587'
       smtp_from: 'alertmanager@azeno.com'
-      smtp_auth_username: 'koltan.pl@gmail.com'
-      smtp_auth_password: 'meqh wnje rxgl jydw'
+      smtp_auth_username: 'example@exaple.com'
+      smtp_auth_password: 'enter your password here'
 #      slack_api_url: 'https://hooks.slack.com/sources/'
     templates:
       - '/etc/alertmanager/config/*.tmpl'
