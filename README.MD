@@ -148,16 +148,46 @@ kubectl get pods -n monitoring
 
 ### 📑 API Documentation
 
-Once running locally, open:
+Once the application is running, you can access the interactive documentation at:
 
 ```
 http://localhost/docs
 ```
 
+
 ![Swagger UI](https://github.com/Kinetics20/project/blob/main/microservice/docs/widget_Api.jpg)
 
 ---
 
+### 🔐 Authentication Workflow (Required to Use the API)
+
+To successfully use all CRUD operations on users and widgets, follow these steps:
+
+1. **Create an admin user**  
+   - Go to the `users` section → `POST /users/`
+   - Provide user details and set the `status` field to `admin`
+   - Example payload:
+     ```json
+     {
+       "username": "adminuser",
+       "password": "yourpassword",
+       "status": "admin"
+     }
+     ```
+
+2. **Authorize the session**  
+   - Click the **Authorize** button in the top right of the Swagger UI
+   - Enter the JWT token you received after logging in as the admin user
+
+3. **Start making authenticated requests**  
+   - After successful authorization, you can now:
+     - Create, read, update, and delete users
+     - Perform all widget operations (CRUD)
+     - Access endpoints protected by authentication
+
+> ⚠️ **Note**: If the user is not created with `"status": "admin"`, access to certain endpoints will be restricted.
+
+---
 ### 📦 Author
 
 👤 **Piotr Lipiński**
