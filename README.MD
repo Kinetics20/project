@@ -188,6 +188,135 @@ To successfully use all CRUD operations on users and widgets, follow these steps
 > ⚠️ **Note**: If the user is not created with `"status": "admin"`, access to certain endpoints will be restricted.
 
 ---
+
+### 📊 Monitoring with Prometheus and Grafana
+
+This project includes a full monitoring setup using **Prometheus** and **Grafana**, deployed via **Helm**.
+
+---
+
+### 🔧 1. Install Helm
+
+First, install Helm on your system:
+
+```bash
+curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+sudo apt-get install apt-transport-https --yes
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+sudo apt-get install helm
+````
+
+---
+
+### 📦 2. Add Helm Repositories
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+```
+
+---
+
+### 🧠 3. Create Monitoring Namespace
+
+```bash
+kubectl create namespace monitoring
+```
+
+---
+
+### 📈 4. Install Prometheus
+
+```bash
+helm install prometheus prometheus-community/prometheus \
+  --namespace monitoring \
+  --set alertmanager.persistentVolume.storageClass=hostpath \
+  --set server.persistentVolume.storageClass=hostpath \
+  --values - <<EOF
+server:
+  additionalScrapeConfigs:
+    - job_name: 'widget-api'
+      static_configs:
+        - targets: ['widget-api:80']
+EOF
+```
+
+This configures Prometheus to scrape metrics from the `widget-api` container.
+
+---
+
+### 📉 5. Install Grafana
+
+```bash
+helm install grafana grafana/grafana \
+  --namespace monitoring \
+  --set persistence.storageClassName=hostpath \
+  --set persistence.enabled=true \
+  --set adminPassword='admin' \
+  --values - <<EOF
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server.monitoring.svc.cluster.local
+      access: proxy
+      isDefault: true
+EOF
+```
+
+Login credentials:
+
+* **Username**: `admin`
+* **Password**: `admin`
+
+---
+
+### 🔌 6. Port Forwarding
+
+Forward ports locally to access both dashboards in your browser:
+
+```bash
+kubectl port-forward -n monitoring svc/grafana 3000:80
+```
+
+Grafana will be available at:
+
+```
+http://localhost:3000
+```
+
+```bash
+kubectl port-forward -n monitoring svc/prometheus-server 3001:80
+```
+
+Prometheus will be available at:
+
+```
+http://localhost:3001
+```
+
+---
+
+### 🧾 7. Import Dashboard in Grafana
+
+To visualize metrics from the `widget-api`, import the preconfigured dashboard:
+
+1. Open Grafana → **Dashboards** → **Create** → **Import**
+2. Use the file located at:
+
+   ```
+   microservice/api/scripts/grafana-dashboard.json
+   ```
+3. You can upload the file or paste the raw JSON into the text editor.
+
+> ✅ The dashboard will show live metrics from Prometheus such as pod health, API performance, and request frequency.
+
+
+---
 ### 📦 Author
 
 👤 **Piotr Lipiński**
